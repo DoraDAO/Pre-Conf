@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import styles from './HeroSection.module.css';
 
-// Custom hook for animated counter
+
 const useCounter = (end, duration = 2000, start = 0) => {
   const [count, setCount] = useState(start);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -44,6 +44,7 @@ const useCounter = (end, duration = 2000, start = 0) => {
 function HeroSection() {
   return (
     <section className={styles.hero} id="about">
+
       <div className={styles.container}>
         {/* Title Section */}
         <div className={styles.titleSection}>
@@ -64,7 +65,7 @@ function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <p className={styles.smallDescription}>
-              Open to all genders and professionals worldwide,<br />
+              Open to all genders and professionals worldwide,
               a global kickoff to the Girls Who Yap Conference.
             </p>
           </motion.div>
@@ -96,20 +97,31 @@ function HeroSection() {
             
             <div className={styles.eventDetails}>
               <div className={styles.speakerInfo}>
-                <div className={styles.avatar}></div>
+                {/* Updated: Replaced blue div with Image Logo */}
+                <img src="/logo.png" alt="GWY Logo" className={styles.avatar} />
                 <div>
                   <div className={styles.speakerName}>GirlsWhoYap Conference</div>
-                  <div className={styles.speakerRole}>Creator-First Gathering</div>
+                  <div className={styles.speakerRole}>Dev-creator Gathering</div>
                 </div>
               </div>
-              <button className={styles.arrowBtn}>→</button>
+              <button 
+                className={styles.arrowBtn} 
+                onClick={() => window.location.href = '/ticket'}
+              >
+                →
+              </button>
             </div>
           </motion.div>
 
-          {/* Bottom Info */}
+          {/* Bottom Info with Logo Update */}
           <div className={styles.bottomInfo}>
             <span className={styles.reminderBtn}>28th Feb, 2026</span>
-            <span className={styles.participants}>2000+ audience</span>
+            
+            {/* Updated container to include logo before text */}
+            <div className={styles.poweredByContainer}>
+              <img src="/logo.png" alt="DoraDao" className={styles.partnerLogo} /> 
+              <span>Powered by DoraDao</span>
+            </div>
           </div>
         </div>
 
@@ -187,7 +199,7 @@ const AnimatedCTASection = () => {
         </div>
       </div>
 
-      <button className={styles.getTicketsBtn}>Get Tickets</button>
+      <button className={styles.getTicketsBtn} onClick={() => window.location.href = '/ticket'}>Get Tickets</button>
     </motion.div>
   );
 };

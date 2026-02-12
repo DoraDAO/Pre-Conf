@@ -97,8 +97,10 @@ function LiveEvents() {
         </div>
         
         <div className={styles.ctas}>
-          <button className={styles.primaryBtn}>Get Started</button>
-          <button className={styles.secondaryBtn}>Browse</button>
+          <button className={styles.primaryBtn} onClick={() => window.location.href = '/ticket'}>Grab your ticket</button>
+          <button className={styles.secondaryBtn} onClick={() => window.open('https://luma.com/40umdp7f', '_blank', 'noopener,noreferrer') }>
+            Become Partner
+          </button>
         </div>
       </div>
     </section>
