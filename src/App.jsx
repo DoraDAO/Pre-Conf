@@ -10,7 +10,7 @@ import WhoItsFor from './components/WhoItsFor/WhoItsFor';
 import BecomeASpeaker from './components/BecomeASpeaker/BecomeASpeaker';
 import PlanAhead from './components/PlanAhead/PlanAhead';
 import Engagement from './components/Engagement/Engagement';
-import CTASection from './components/CTASection/CTASection';
+// import CTASection from './components/CTASection/CTASection';
 import Partners from './components/Partners/Partners';
 import Footer from './components/Footer/Footer';
 import TicketSection from './components/Ticket/TicketSection';
