@@ -9,10 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.95.3",
+    "browser-image-compression": "^2.0.2",
     "framer-motion": "^10.16.4",
     "gsap": "^3.14.2",
+    "lucide-react": "^0.563.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

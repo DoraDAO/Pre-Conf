@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [ambassadorDropdown, setAmbassadorDropdown] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,6 +16,25 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleNavClick = (sectionId) => {
+    if (location.pathname === '/') {
+      // If already on home page, just scroll to the section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If on a different page, navigate to home and then scroll
+      navigate('/', { replace: true });
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
+
   return (
     <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
@@ -21,10 +43,10 @@ function Navbar() {
         </div>
         
         <div className={styles.navLinks}>
-          <a href="#about">About</a>
-          <a href="#experience">Experience</a>
-          <a href="#speakers">Speakers</a>
-          <a href="#events">Events</a>
+          <button onClick={() => handleNavClick('about')} className={styles.navLink}>About</button>
+          <button onClick={() => handleNavClick('experience')} className={styles.navLink}>Experience</button>
+          <button onClick={() => handleNavClick('speakers')} className={styles.navLink}>Speakers</button>
+          <button onClick={() => handleNavClick('events')} className={styles.navLink}>Events</button>
           
           {/* Ambassador with dropdown */}
           <div 
@@ -32,19 +54,19 @@ function Navbar() {
             onMouseEnter={() => setAmbassadorDropdown(true)}
             onMouseLeave={() => setAmbassadorDropdown(false)}
           >
-            <a href="#ambassador" className={styles.dropdownToggle}>
+            <button onClick={() => handleNavClick('ambassador')} className={`${styles.dropdownToggle} ${styles.navLink}`}>
               Ambassador
               <span className={styles.dropdownIcon}>▼</span>
-            </a>
+            </button>
             {ambassadorDropdown && (
               <div className={styles.dropdownMenu}>
-                <a href="#leaderboard">Leaderboard</a>
+                <button onClick={() => handleNavClick('leaderboard')} className={styles.navLink}>Leaderboard</button>
               </div>
             )}
           </div>
         </div>
         
-        <button className={styles.ctaButton}>Get Tickets</button>
+        <Link to="/ticket" className={styles.ctaButton}>Get Tickets</Link>
       </div>
     </nav>
   );

@@ -1,0 +1,318 @@
+.ticket-section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f3e6;
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.ticket-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ticket-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  border: 2px solid #000;
+}
+
+.ticket-card h1, .ticket-card h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+
+.ticket-card p {
+  color: #333;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+/* --- FORM STYLES --- */
+.form-group {
+  margin-bottom: 1.2rem;
+  width: 100%;
+  text-align: left; /* ALIGNS LABELS TO THE LEFT */
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #000;
+  border-radius: 12px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
+  background: white;
+}
+
+.input-field:focus {
+  background-color: #fff9e6;
+}
+
+.file-upload {
+  position: relative;
+  height: 150px;
+  border: 2px dashed #000;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  background: white;
+  transition: background 0.2s;
+}
+
+.file-upload:hover {
+  background: #fafafa;
+}
+
+.file-upload input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- BUTTONS --- */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 1.5rem;
+  align-items: center; /* Centers the buttons */
+  width: 100%;
+}
+
+.btn-primary {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  transition: transform 0.1s, background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #000;
+  transform: scale(1.01);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Lighter tone button (Text Link style) */
+.btn-text {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  text-decoration: underline;
+  font-size: 0.9rem;
+  padding: 5px;
+}
+
+.btn-text:hover {
+  color: #000;
+}
+
+.error-msg {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* --- TICKET VISUAL STYLING --- */
+.ticket-display-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ticket-visual {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  height: auto; 
+  margin: 2rem 0;
+  user-select: none;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  border-radius: 20px;
+  display: inline-block; 
+  line-height: 0;
+  overflow: hidden;
+}
+
+.ticket-bg-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 20px;
+}
+
+/* --- 1. AVATAR OVERLAY --- */
+.ticket-avatar-container {
+  position: absolute;
+  left: var(--avatar-x);
+  top: var(--avatar-y);
+  height: var(--avatar-size);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 10;
+  background-color: #000;
+  border: 2px solid #000;
+}
+
+.ticket-avatar-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- 2. INDIVIDUAL INFO BLOCKS (Seat & Row) --- */
+.info-block {
+  position: absolute;
+  transform: translate(-50%, -50%) rotate(var(--rotation, 0deg));
+  background-color: #ffb6c1;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: normal;
+  text-align: center;
+}
+
+.seat-block {
+  left: var(--seat-x);
+  top: var(--seat-y);
+  width: var(--seat-w);
+  height: var(--seat-h);
+  transform: translate(-50%, -50%) rotate(var(--seat-rot));
+}
+
+.row-block {
+  left: var(--row-x);
+  top: var(--row-y);
+  width: var(--row-w);
+  height: var(--row-h);
+  transform: translate(-50%, -50%) rotate(var(--row-rot));
+}
+
+.stub-label {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.4rem, 25cqw, 1rem); 
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 2px;
+}
+
+.stub-value {
+  font-family: 'Impact', sans-serif;
+  font-size: clamp(1rem, 70cqw, 3rem);
+  color: #000;
+  line-height: 1;
+}
+
+/* --- 3. QR OVERLAY --- */
+.qr-block {
+  position: absolute;
+  left: var(--qr-x);
+  top: var(--qr-y);
+  height: 25.3%;
+  aspect-ratio: 1/1;
+  transform: translate(-50%, -50%) rotate(var(--qr-rot));
+  
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fef0c5;
+  padding: 0.5%;
+}
+
+.patch-yellow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #fef0c5;
+  z-index: -1;
+}
+
+.qr-block img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* --- DOWNLOAD BUTTON SPECIFIC --- */
+.download-btn {
+  width: 80% !important; /* Forces 80% width */
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .ticket-visual {
+    border-radius: 10px;
+  }
+  .ticket-bg-img {
+    border-radius: 10px;
+  }
+  .ticket-card {
+    padding: 1.5rem;
+  }
+}

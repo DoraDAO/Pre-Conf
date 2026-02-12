@@ -42,6 +42,37 @@
     align-items: center;
 }
 
+.navLink {
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.navLink:hover {
+    color: var(--color-text-primary);
+}
+
+.navLink::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-text-primary);
+    transition: width var(--transition-base);
+}
+
+.navLink:hover::after {
+    width: 100%;
+}
+
 .navLinks a {
     font-size: var(--text-base);
     font-weight: 500;
@@ -126,6 +157,27 @@
 .dropdownMenu a:hover {
     background: var(--color-bg-secondary, rgba(0, 0, 0, 0.05));
 }
+
+.dropdownMenu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.dropdownMenu button:hover {
+    background: var(--color-bg-secondary, rgba(0, 0, 0, 0.05));
+    color: var(--color-text-primary);
+}
+
 
 .dropdownMenu a::after {
     display: none;
