@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import styles from './LiveEvents.module.css';
 
 function LiveEvents() {
+  const navigate = useNavigate();
   return (
     <section className={styles.liveEvents}>
       <div className={styles.container}>
@@ -97,7 +99,7 @@ function LiveEvents() {
         </div>
         
         <div className={styles.ctas}>
-          <button className={styles.primaryBtn} onClick={() => window.location.href = '/ticket'}>Grab your ticket</button>
+          <button className={styles.primaryBtn} onClick={() => navigate('/ticket')}>Grab your ticket</button>
           <button className={styles.secondaryBtn} onClick={() => window.open('https://luma.com/40umdp7f', '_blank', 'noopener,noreferrer') }>
             Become Partner
           </button>

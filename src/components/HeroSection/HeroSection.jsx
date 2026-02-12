@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import styles from './HeroSection.module.css';
-
 
 const useCounter = (end, duration = 2000, start = 0) => {
   const [count, setCount] = useState(start);
@@ -42,6 +42,8 @@ const useCounter = (end, duration = 2000, start = 0) => {
 };
 
 function HeroSection() {
+  const navigate = useNavigate(); // Hook for client-side navigation
+
   return (
     <section className={styles.hero} id="about">
 
@@ -106,7 +108,7 @@ function HeroSection() {
               </div>
               <button 
                 className={styles.arrowBtn} 
-                onClick={() => window.location.href = '/ticket'}
+                onClick={() => navigate('/ticket')}
               >
                 →
               </button>
@@ -119,7 +121,7 @@ function HeroSection() {
             
             {/* Updated container to include logo before text */}
             <div className={styles.poweredByContainer}>
-              <img src="/logo.png" alt="DoraDao" className={styles.partnerLogo} /> 
+              <img src="/logo.png" alt="DoraDao" className={styles.partnerLogo} style={{ borderRadius: '50%' }} /> 
               <span>Powered by DoraDao</span>
             </div>
           </div>
@@ -134,6 +136,7 @@ function HeroSection() {
 
 // Countdown Timer Section Component
 const AnimatedCTASection = () => {
+  const navigate = useNavigate();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   
@@ -199,7 +202,7 @@ const AnimatedCTASection = () => {
         </div>
       </div>
 
-      <button className={styles.getTicketsBtn} onClick={() => window.location.href = '/ticket'}>Get Tickets</button>
+      <button className={styles.getTicketsBtn} onClick={() => navigate('/ticket')}>Get Tickets</button>
     </motion.div>
   );
 };

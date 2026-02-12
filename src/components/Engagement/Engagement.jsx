@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import styles from './Engagement.module.css';
 
 function Engagement() {
+  const navigate = useNavigate();
   return (
     <section className={styles.engagement}>
       <div className={styles.container}>
@@ -22,9 +24,9 @@ function Engagement() {
             attend, and seats are curated to ensure meaningful participation.
           </p>
 
-          <a href="/ticket" className={styles.ctaBtn}>
+          <button className={styles.ctaBtn} onClick={() => navigate('/ticket')}>
             Grab Your Ticket
-          </a>
+          </button>
         </motion.div>
         
         <motion.div 
