@@ -361,7 +361,7 @@
 @media (max-width: 768px) {
     .hero {
         padding: var(--space-6) var(--space-4) var(--space-12);
-        margin-top: 130px;
+        margin-top: 50px;
     }
 
     .titleSection {

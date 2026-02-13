@@ -466,8 +466,8 @@
         backdrop-filter: blur(10px);
 
         height: 100%;
-        min-height: 280px;
-        max-height: 350px;
+        min-height: 25px;
+        max-height: 70px;
         object-fit: cover;
     }
 
