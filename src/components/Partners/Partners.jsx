@@ -58,14 +58,14 @@ const Partners = () => {
     { name: "MongoDB", logo: "https://webassets.mongodb.com/_com_assets/cms/mongodb_logo1-76twgcu2dm.png" },
     { name: "Polygon", logo: "https://cryptologos.cc/logos/polygon-matic-logo.png" },
     { logo: "https://replit.com/public/images/logo-small.png" },
-    { name: "Soonami.io", logo: "/soonami.jpg" },
-    { name: "Mentro", logo: "/mentro.jpg" },
-    { name: "Socrates", logo: "/socrates.jpg" },
+    { name: "Soonami.io", logo: "/soonami.png" },
+    { name: "Mentro", logo: "/mentro.png" },
+    { name: "Socrates", logo: "/socrates.png" },
     { name: "Filecoin", logo: "https://cryptologos.cc/logos/filecoin-fil-logo.png" },
-    { name: "Devfolio", logo: "/devfolio-logo.jpg" },
+    { name: "Devfolio", logo: "/devfolio-logo.png" },
     { name: "CoreDAO.org", logo: "https://cryptologos.cc/logos/core-dao-core-logo.png" },
-    { logo: "/reskill.jpg" },
-    { name: "Unhosted AI", logo: "/unhosted.jpg" }
+    { logo: "/reskill.png" },
+    { name: "Unhosted AI", logo: "/unhosted.png" }
   ];
 
   const loopedPartners = [...partners, ...partners];
