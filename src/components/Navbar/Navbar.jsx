@@ -39,7 +39,7 @@ function Navbar() {
     <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <img src="/logo.png" alt="GirlsWhoYap" />
+          <img src="/logo2.svg" alt="GirlsWhoYap" />
         </div>
         
         <div className={styles.navLinks}>

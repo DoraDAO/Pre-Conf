@@ -49,10 +49,10 @@
 }
 
 .preConferenceTitle {
-    font-size: var(--text-2xl);
-    font-weight: 700;
+    font-size: var(--text-4xl);
+    font-weight: 1000;
     color: #db4a2b;
-    text-transform: lowercase;
+    text-transform: uppercase;
     font-family: var(--font-heading);
 }
 
@@ -361,7 +361,7 @@
 @media (max-width: 768px) {
     .hero {
         padding: var(--space-6) var(--space-4) var(--space-12);
-        margin-top: 60px;
+        margin-top: 130px;
     }
 
     .titleSection {
@@ -371,6 +371,12 @@
 
     .mainTitle {
         font-size: var(--text-4xl);
+    }
+
+    .preConferenceTitle {
+        font-size: var(--text-3xl);
+        word-wrap: break-word;
+        word-break: break-word;
     }
 
     .descriptionBox {

@@ -56,11 +56,11 @@ function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <img src="/logo.png" alt="Girls Who Yap" className={styles.mainLogo} />
+            <img src="/logo2.svg" alt="Girls Who Yap" className={styles.mainLogo} />
             <span className={styles.preConferenceTitle}>pre conference</span>
           </motion.div>
           
-          <motion.div 
+          {/* <motion.div 
             className={styles.descriptionBox}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -70,7 +70,7 @@ function HeroSection() {
               Open to all genders and professionals worldwide,
               a global kickoff to the Girls Who Yap Conference.
             </p>
-          </motion.div>
+          </motion.div> */}
         </div>
 
         {/* Crowd Banner with Overlay Card */}
