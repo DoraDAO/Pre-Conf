@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import * as XLSX from 'xlsx';
@@ -7,8 +7,6 @@ import './LeaderboardSection.css';
 const LeaderboardPage = () => {
   const pageRef = useRef(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [totalAmbassadors, setTotalAmbassadors] = useState(0);
-  const [year] = useState(new Date().getFullYear());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,7 +38,6 @@ const LeaderboardPage = () => {
           }));
 
         setLeaderboardData(transformedData);
-        setTotalAmbassadors(jsonData.length);
         setError(null);
       } catch (err) {
         console.error('Error loading Excel data:', err);
@@ -184,13 +181,6 @@ const LeaderboardPage = () => {
                 </svg>
                 <span className="stat-label">LIVE</span>
               </div>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value">{totalAmbassadors}</span>
-              <span className="stat-label">Total Ambassadors</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value">{year}</span>
             </div>
           </div>
         </div>
