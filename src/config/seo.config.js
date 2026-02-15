@@ -8,31 +8,31 @@ export const seoConfig = {
   description: "Where women don't just attend conferences, they shape conversations.",
   
   // URLs
-  siteUrl: "https://girlswhoyap.com", // Update with your actual domain
-  canonicalUrl: "https://girlswhoyap.com",
+  siteUrl: "https://preconf.vercel.app/", 
+  canonicalUrl: "https://preconf.vercel.app/",
   
   // Social Media Images
-  ogImage: "/logo.png", // Update with actual OG image path (recommended: 1200x630px)
-  twitterImage: "/logo.png", // Update with actual Twitter card image (recommended: 1200x600px)
+  ogImage: "/logo.png", // Update with actual OG image path (1200x630px)
+  twitterImage: "/logo.png", // Update with actual Twitter card image (1200x600px)
   
   // Social Media Handles
-  twitterHandle: "@girlswhoyap", // Update with actual Twitter handle
-  twitterSite: "@girlswhoyap",
+  twitterHandle: "@connectdoradao",
+  twitterSite: "@connectdoradao",
   
   // Additional Meta
   keywords: "women in tech, tech conference, girls who yap, women empowerment, tech community",
-  author: "GirlsWhoYap Team",
-  themeColor: "#000000", // Update with your brand color
+  author: "GirlsWhoYap",
+  themeColor: "#000000", 
   
   // Conference Specific
-  conferenceDate: "2026", // Update for each edition
-  conferenceLocation: "India", // Update as needed
+  conferenceDate: "2026",
+  conferenceLocation: "India", 
   
   // Open Graph Type
   ogType: "website",
   
   // Twitter Card Type
-  twitterCardType: "summary_large_image", // or "summary"
+  twitterCardType: "summary_large_image", 
 };
 
 // Page-specific SEO overrides
@@ -47,5 +47,4 @@ export const pageSEO = {
     description: "Explore all the exciting events, workshops, and sessions at GirlsWhoYap Conference.",
     path: "/events",
   },
-  // Add more pages as needed
 };
