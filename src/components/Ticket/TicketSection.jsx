@@ -6,7 +6,6 @@ import imageCompression from 'browser-image-compression';
 import { Turnstile } from '@marsidev/react-turnstile'; 
 import './TicketSection.css'; 
 
-// --- CONFIGURATION ---
 const TICKET_CONFIG = {
   avatar: { x: 64.6, y: 50.6, size: 101.1 },
   seat: { x: 93.1, y: 23.1, w: 5.9, h: 17.8, rotation: -90.0, fontSize: 2.2 },
@@ -31,7 +30,6 @@ but also to feel that spark you only get when the right people gather in one pla
 See you inside
 #GWYConf #GirlsWhoYap #PreConfGlobalExperience`;
 
-// UPDATED: Now using Environment Variable
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 const TicketSection = () => {
@@ -41,7 +39,6 @@ const TicketSection = () => {
   const [ticketData, setTicketData] = useState(null);
   const [copyFeedback, setCopyFeedback] = useState('');
   
-  // CAPTCHA State
   const [captchaToken, setCaptchaToken] = useState(null);
 
   const [isMobile, setIsMobile] = useState(false);
@@ -157,7 +154,7 @@ const TicketSection = () => {
     setLoading(true);
     setError('');
 
-    // CHECK CAPTCHA BEFORE PROCEEDING
+    // --- STRICT CAPTCHA CHECK (No bypasses) ---
     if (!captchaToken) {
       setError("Please complete the security check.");
       setLoading(false);
@@ -165,7 +162,6 @@ const TicketSection = () => {
     }
 
     try {
-      // 1. Check if user already exists (Standard client-side check)
       const { data: existing } = await supabase
         .from('tickets')
         .select('id')
@@ -178,16 +174,15 @@ const TicketSection = () => {
         return;
       }
 
-      // 2. Upload Image (Standard client-side upload)
       let avatarUrl = '';
       if (formData.image) {
         let fileToUpload = formData.image;
         try {
           const options = {
-            maxSizeMB: 0.1,          
-            maxWidthOrHeight: 400,  
+            maxSizeMB: 0.2,          
+            maxWidthOrHeight: 1200,  
             useWebWorker: true,
-            fileType: 'image/webp'   
+            fileType: 'image/jpeg'   
           };
           fileToUpload = await imageCompression(formData.image, options);
         } catch (compressionError) {
@@ -225,7 +220,6 @@ const TicketSection = () => {
         seat_number: seat.toString().padStart(2, '0')
       };
 
-      // 3. SECURE INSERT via Edge Function
       const { data, error: functionError } = await supabase.functions.invoke('swift-action', {
         body: { 
           ticketData: newTicketPayload,
@@ -236,7 +230,6 @@ const TicketSection = () => {
       if (functionError) throw new Error(functionError.message || "Failed to create ticket");
       if (data?.error) throw new Error(data.error);
 
-      // Success
       setTicketData(data.data);
       setView('ticket');
 
@@ -253,6 +246,11 @@ const TicketSection = () => {
     if (!canvas || !ticketData) return;
 
     const ctx = canvas.getContext('2d');
+    
+    // HIGH QUALITY RENDERING SETTINGS
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.src = "/ticket-bg.png"; 
@@ -290,7 +288,22 @@ const TicketSection = () => {
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
         ctx.clip();
-        ctx.drawImage(avatarImg, centerX - radius - 1, centerY - radius - 1, radius * 2 + 2, radius * 2 + 2);
+        
+        // --- MATH CANVAS CROP FIX ---
+        const imgW = avatarImg.width;
+        const imgH = avatarImg.height;
+        const minSize = Math.min(imgW, imgH); 
+        
+        const startX = (imgW - minSize) / 2;
+        const startY = (imgH - minSize) / 2;
+
+        ctx.drawImage(
+          avatarImg, 
+          startX, startY, minSize, minSize, 
+          centerX - radius, centerY - radius, radius * 2, radius * 2 
+        );
+        // -----------------------------
+        
         ctx.restore();
         
         drawDetails();
@@ -472,7 +485,7 @@ const TicketSection = () => {
                 </div>
               </div>
               
-              {/* CAPTCHA SECTION */}
+              {/* CAPTCHA ALWAYS LOADS NOW */}
               <div className="form-group" style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
                 <Turnstile 
                   siteKey={TURNSTILE_SITE_KEY} 
@@ -502,7 +515,6 @@ const TicketSection = () => {
               Welcome to the <span className="highlight-text">"GWY Pre-Conference Global Experience"</span>
             </p>
             
-            {/* DYNAMIC TICKET VISUAL */}
             <div className="ticket-visual" style={{
               '--avatar-x': `${activeConfig.avatar.x}%`,
               '--avatar-y': `${activeConfig.avatar.y}%`,
@@ -529,14 +541,12 @@ const TicketSection = () => {
                 <img src={ticketData.avatar_url || "./default-avatar.png"} alt="User" />
               </div>
               
-              {/* SEAT */}
               <div className="info-block seat-block">
                 <span className="stub-value" style={{ fontSize: `${activeConfig.seat.fontSize}rem` }}>
                   {ticketData.seat_number}
                 </span>
               </div>
               
-              {/* ROW */}
               <div className="info-block row-block">
                 <span className="stub-value" style={{ fontSize: `${activeConfig.row.fontSize}rem` }}>
                   {ticketData.row_number}
