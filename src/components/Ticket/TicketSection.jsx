@@ -555,7 +555,7 @@ const TicketSection = () => {
               
               <div className="qr-block">
                 <div className="patch-yellow"></div>
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GWY-${ticketData.email}`} alt="QR" />
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gwyconf.xyz/ticket?id=GWY-${ticketData.email}`}
               </div>
             </div>
 
