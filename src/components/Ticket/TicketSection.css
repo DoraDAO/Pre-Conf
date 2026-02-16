@@ -22,10 +22,9 @@
 
 /* --- LOGO STYLES --- */
 .site-logo {
-  height: 80px; 
+  height: 250px; 
   width: auto;
-  margin-bottom: 2rem;
-  /* FIX: Added margin-top to ensure it doesn't touch the header */
+  margin-bottom: -40px;
   margin-top: 1rem; 
   object-fit: contain;
   display: block;
@@ -96,7 +95,7 @@
 
 .highlight-text {
   font-weight: 700;
-  color: #000;
+  color: #D9671B;
 }
 
 /* --- FORM LAYOUTS (SPLIT) --- */

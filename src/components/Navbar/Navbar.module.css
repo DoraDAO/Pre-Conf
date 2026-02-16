@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    background: var(--color-bg-primary);
+    background: #FBF7F5;
     transition: var(--transition-base);
 }
 
@@ -26,15 +26,29 @@
 .logo {
     display: flex;
     align-items: center;
+    position: relative; /* Keep it as a reference point */
+    width: 200px;       /* Set a fixed width for the container area */
+    height: 60px;       /* Set a standard height for the navbar area */
 }
 
 .logo img {
-    height: 70px;
+    /* 1. Use absolute positioning so it doesn't push the navbar height */
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%); /* Centers it vertically */
+    
+    /* 2. Set your desired large size */
+    height: 180px;  /* 250px might be too huge for a header, 180px is a sweet spot */
     width: auto;
+    
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: 0; /* Removing radius as discussed to keep it clean */
+    z-index: 1001;    /* Ensures it stays above the navbar background */
+    
+    /* 3. Magic Fix for the background issue from earlier */
+    mix-blend-mode: multiply; 
 }
-
 
 .navLinks {
     display: flex;

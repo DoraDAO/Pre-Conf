@@ -371,13 +371,13 @@ const TicketSection = () => {
     <section className="ticket-section">
       <div className="ticket-container">
         
-        <img src="/logo.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' }}/>
+        <img src="/logo2.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' }}/>
         
         {/* LANDING VIEW */}
         {view === 'landing' && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="ticket-card">
             <h1>Get Your Ticket</h1>
-            <p>Join the Girls Who Yap Pre-Conference!</p>
+            <p>Join the Girls Who Yap <span className="highlight-text">Pre-Conference</span>!</p>
             <div className="button-group">
               <button className="btn-primary" onClick={() => setView('form')}>
                 Get Ticket
@@ -416,7 +416,7 @@ const TicketSection = () => {
         {/* FORM VIEW */}
         {view === 'form' && (
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="ticket-card wide-form">
-            <h2>Secure Your Free Pass</h2> 
+            <h2><span style={{ fontWeight: 900 }}>Secure Your </span> <span className="highlight-text">Free Pass</span></h2> 
             <h6> (No registration fee. Limited curated seats.) </h6>
             <form onSubmit={handleSubmit}>
               
@@ -585,7 +585,7 @@ const TicketSection = () => {
 
             <div className="ticket-footer-text">
               <h2>See you inside the global room.</h2>
-              <h2>The energy builds with you ;)</h2>
+              <h2>The energy builds with <span className="highlight-text">you</span> !!</h2>
             </div>
 
             <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>

@@ -40,7 +40,7 @@ function PlanAhead() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className={styles.title}>Don’t just attend. Come participate with us.</h2>
+          <h2 className={styles.title}>Don’t just attend. <span className={styles.highlight} style={{ color: '#D9671B' }}>Come participate</span> with us.</h2>
           
           <p className={styles.description}>
             This isn’t the kind of space where you sit in a chair, clap politely, and leave with a tote bag.
@@ -48,15 +48,15 @@ function PlanAhead() {
           </p>
 
           <p className={styles.description}>
-            You could light up Talent Night, sing, roast, stand up, dance, art showcase, perform, surprise us.
+            You could light up <span className={styles.highlight} style={{ color: '#D9671B', fontWeight: 'bold' }}>Talent Night</span> , sing, roast, stand up, dance, art showcase, perform, surprise us.
           </p>
 
           <p className={styles.description}>
-            Become an Ambassador and carry GWY Pre-Conf into your city, your campus, your little corner of the world.
+            Become an <span className={styles.highlight} style={{ color: '#D9671B', fontWeight: 'bold' }}>Ambassador</span> and carry GWY Pre-Conf into your city, your campus, your little corner of the world.
           </p>
 
           <p className={styles.description}>
-            Come Volunteer with us. Help us weave this global story across 150+ cities, alongside partners from 25+ countries.
+            Come <span className={styles.highlight} style={{ color: '#D9671B', fontWeight: 'bold' }}>Volunteer</span> with us. Help us weave this global story across 150+ cities, alongside partners from 25+ countries.
           </p>
 
           <button className={styles.ctaBtn} onClick={() => window.open('https://luma.com/he730d4l', '_blank', 'noopener,noreferrer') }>

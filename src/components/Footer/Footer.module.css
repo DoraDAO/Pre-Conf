@@ -1,5 +1,5 @@
 .footer {
-    background: #ffffff;
+    background: #FBF7F5;
     padding: var(--space-16) var(--space-6) var(--space-8);
     border-top: 1px solid #e5e7eb;
     position: relative;
@@ -31,6 +31,19 @@
     font-weight: 700;
     color: #111827;
     margin: 0;
+    padding-top: 10px;
+}
+
+.logoImage {
+    cursor: pointer; /* Makes it clear it's clickable */
+    display: inline-block;
+    max-width: 100%; /* Prevents it from overflowing the screen */
+}
+
+.logoImage img {
+    height: 80px;    /* Start here and adjust to your liking */
+    width: auto;     /* Keeps the logo from looking squashed */
+    display: block;
 }
 
 .logo {
