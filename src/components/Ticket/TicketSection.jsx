@@ -20,15 +20,19 @@ const MOBILE_TICKET_CONFIG = {
   qr: { x: 88.6, y: 74.3, size: 25.3, rotation: 0.0 }
 };
 
-const SHARE_CAPTION = `I just said yes to
-And honestly… I’m smiling smiling.
+const SHARE_CAPTION = `Just got my ticket for the GWY Pre-Conference and I’m lowkey excited-excited 🥹✨
+I thought it would be just another online thing…
+but looking at what’s planned, speaker sessions, Talent Night, creator challenges, gaming rooms, live collabs with people across borders (!!)...it actually feels like something I want to show up for.
+Also… merch raffles?
+Gift vouchers?
+DoraDelight ( i must tell you these treats are just wow..literally wow )
+Okay GWY, I see you 👀💌
+It’s free (which still feels unreal),
+See you all there 🫶
+And if you haven’t gotten yours yet… use the link ( https://gwyconf.xyz/ )
+ & drop my name in the referral section so I can also be eligible for the sweet treats 🥹✨
 
-30+ Countries. One shared heartbeat.
-So many beautiful minds building, dreaming, creating.
-I’m coming to learn, to build, to connect..
-but also to feel that spark you only get when the right people gather in one place.
-See you inside
-#GWYConf #GirlsWhoYap #PreConfGlobalExperience`;
+#GWYConf #DoraDora`;
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
