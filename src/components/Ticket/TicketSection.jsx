@@ -337,8 +337,7 @@ const TicketSection = () => {
 
         const qrImg = new Image();
         qrImg.crossOrigin = "anonymous";
-        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=GWY-${ticketData.email}`;
-        
+        qrImg.src = "/qr.png";
         qrImg.onload = () => {
           const { x: qrX_pct, y: qrY_pct, size: qrSize_pct, rotation } = TICKET_CONFIG.qr;
           const qrSize = h * (qrSize_pct / 100);
@@ -555,7 +554,7 @@ const TicketSection = () => {
               
               <div className="qr-block">
                 <div className="patch-yellow"></div>
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gwyconf.xyz/ticket?id=GWY-${ticketData.email}`}
+                <img src="/qr.png" alt="Ticket QR Code" style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} />
               </div>
             </div>
 
