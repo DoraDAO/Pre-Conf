@@ -128,12 +128,10 @@ const TicketSection = () => {
         setError("Image size should be less than 5MB");
         return;
       }
-      // Load into cropper instead of directly to preview
       setRawImageStr(URL.createObjectURL(file));
       setShowCropper(true);
       setError('');
     }
-    // Allow re-selecting the same file if they canceled
     e.target.value = null;
   };
 
@@ -200,7 +198,6 @@ const TicketSection = () => {
         return;
     }
     
-    // Open window immediately, then copy to clipboard in background
     window.open(url, '_blank');
     copyToClipboard(SHARE_CAPTION, msg);
   };
@@ -234,9 +231,16 @@ const TicketSection = () => {
     setLoading(true);
     setError('');
 
-    // --- STRICT CAPTCHA CHECK (No bypasses) ---
+    // --- STRICT CAPTCHA CHECK ---
     if (!captchaToken) {
       setError("Please complete the security check.");
+      setLoading(false);
+      return;
+    }
+
+    // upload mandatory
+    if (!formData.image) {
+      setError("Please upload a photo to generate your ticket.");
       setLoading(false);
       return;
     }
@@ -327,7 +331,6 @@ const TicketSection = () => {
 
     const ctx = canvas.getContext('2d');
     
-    // HIGH QUALITY RENDERING SETTINGS
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
 
@@ -369,7 +372,6 @@ const TicketSection = () => {
         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
         ctx.clip();
         
-        // --- MATH CANVAS CROP FIX ---
         const imgW = avatarImg.width;
         const imgH = avatarImg.height;
         const minSize = Math.min(imgW, imgH); 
@@ -382,7 +384,6 @@ const TicketSection = () => {
           startX, startY, minSize, minSize, 
           centerX - radius, centerY - radius, radius * 2, radius * 2 
         );
-        // -----------------------------
         
         ctx.restore();
         
@@ -583,7 +584,7 @@ const TicketSection = () => {
 
               <div className="photo-section">
                 <div className="form-group">
-                  <label>Photo</label>
+                  <label>Photo <span style={{ color: '#e74c3c' }}>*</span></label>
                   <div className="file-upload">
                     <input type="file" id="file" accept="image/*" onChange={handleImageChange} />
                     <label htmlFor="file" className="file-label">
@@ -591,8 +592,11 @@ const TicketSection = () => {
                         <img src={formData.imagePreview} className="preview-img" alt="Preview" />
                       ) : (
                         <>
-                          <Upload size={24} />
-                          <span>Upload Photo</span>
+                          <Upload size={22} />
+                          <span>Upload Photo</span><br></br>
+                          <span style={{ fontSize: '0.75rem', color: '#888', marginTop: '4px' }}>
+                            (JPG/JPEG/PNG/WEBP only)
+                          </span>
                         </>
                       )}
                     </label>
