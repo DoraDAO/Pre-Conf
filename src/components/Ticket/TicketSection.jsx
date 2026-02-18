@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { Upload, Download, Loader2, Linkedin, Instagram, Twitter, Check } from 'lucide-react';
 import { supabase } from '../../supabaseClient'; 
 import imageCompression from 'browser-image-compression';
-import { Turnstile } from '@marsidev/react-turnstile'; 
+import { Turnstile } from '@marsidev/react-turnstile';
+import Cropper from 'react-easy-crop'; 
 import './TicketSection.css'; 
 
 const TICKET_CONFIG = {
@@ -30,11 +31,52 @@ Okay GWY, I see you 👀💌
 It’s free (which still feels unreal),
 See you all there 🫶
 And if you haven’t gotten yours yet… use the link ( https://gwyconf.xyz/ )
- & drop my name in the referral section so I can also be eligible for the sweet treats 🥹✨
-
+& drop my name in the referral section so I can also be eligible for the sweet treats 🥹✨
 #GWYConf #DoraDora`;
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+
+// --- CROP UTILITY FUNCTIONS ---
+const createImage = (url) =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener('load', () => resolve(image));
+    image.addEventListener('error', (error) => reject(error));
+    image.setAttribute('crossOrigin', 'anonymous');
+    image.src = url;
+  });
+
+const getCroppedImg = async (imageSrc, pixelCrop) => {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((file) => {
+      if (file) {
+        file.name = 'cropped.jpg';
+        resolve(file);
+      } else {
+        reject(new Error('Canvas is empty'));
+      }
+    }, 'image/jpeg');
+  });
+};
 
 const TicketSection = () => {
   const [view, setView] = useState('landing'); 
@@ -44,8 +86,14 @@ const TicketSection = () => {
   const [copyFeedback, setCopyFeedback] = useState('');
   
   const [captchaToken, setCaptchaToken] = useState(null);
-
   const [isMobile, setIsMobile] = useState(false);
+
+  // --- CROPPER STATES ---
+  const [showCropper, setShowCropper] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [rawImageStr, setRawImageStr] = useState(null); 
 
   const [formData, setFormData] = useState({
     name: '',
@@ -80,53 +128,81 @@ const TicketSection = () => {
         setError("Image size should be less than 5MB");
         return;
       }
+      // Load into cropper instead of directly to preview
+      setRawImageStr(URL.createObjectURL(file));
+      setShowCropper(true);
+      setError('');
+    }
+    // Allow re-selecting the same file if they canceled
+    e.target.value = null;
+  };
+
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  const handleCropConfirm = async () => {
+    try {
+      const croppedBlob = await getCroppedImg(rawImageStr, croppedAreaPixels);
+      const croppedFile = new File([croppedBlob], "avatar.jpg", { type: "image/jpeg" });
+      
       setFormData({
         ...formData,
-        image: file,
-        imagePreview: URL.createObjectURL(file)
+        image: croppedFile,
+        imagePreview: URL.createObjectURL(croppedBlob)
       });
-      setError('');
+      
+      setShowCropper(false);
+    } catch (e) {
+      console.error(e);
+      setError("Failed to crop image.");
     }
   };
 
   const handleShare = (platform) => {
-    const encodedText = encodeURIComponent(SHARE_CAPTION);
-    let url = '';
-
-    const copyToClipboard = (text) => {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
+    const copyToClipboard = async (text, successMessage) => {
       try {
-        document.execCommand('copy');
-        setCopyFeedback('Caption copied! Opening Instagram...');
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+        }
+        setCopyFeedback(successMessage);
         setTimeout(() => setCopyFeedback(''), 3000);
       } catch (err) {
         console.error('Unable to copy', err);
         setCopyFeedback('Failed to copy caption.');
       }
-      document.body.removeChild(textArea);
     };
+
+    let url = '';
+    let msg = '';
 
     switch (platform) {
       case 'linkedin':
-        url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedText}`;
-        window.open(url, '_blank');
+        url = 'https://www.linkedin.com/feed/?shareActive=true';
+        msg = 'Caption copied! Paste it in your post...';
         break;
       case 'twitter':
-        url = `https://twitter.com/intent/tweet?text=${encodedText}`;
-        window.open(url, '_blank');
+        url = 'https://twitter.com/compose/tweet';
+        msg = 'Caption copied! Paste and edit for Twitter...';
         break;
       case 'instagram':
-        copyToClipboard(SHARE_CAPTION);
-        setTimeout(() => {
-          window.open('https://www.instagram.com/', '_blank');
-        }, 500);
+        url = 'https://www.instagram.com/';
+        msg = 'Caption copied! Opening Instagram...';
         break;
       default:
-        break;
+        return;
     }
+    
+    // Open window immediately, then copy to clipboard in background
+    window.open(url, '_blank');
+    copyToClipboard(SHARE_CAPTION, msg);
   };
 
   const checkExistingTicket = async (email) => {
@@ -374,6 +450,42 @@ const TicketSection = () => {
     <section className="ticket-section">
       <div className="ticket-container">
         
+        {/* --- CROPPER MODAL --- */}
+        {showCropper && (
+          <div className="cropper-modal-overlay">
+            <div className="cropper-modal">
+              <div className="cropper-container">
+                <Cropper
+                  image={rawImageStr}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  cropShape="round"
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                />
+              </div>
+              <div className="cropper-controls">
+                <input
+                  type="range"
+                  value={zoom}
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  aria-labelledby="Zoom"
+                  onChange={(e) => setZoom(e.target.value)}
+                  className="zoom-slider"
+                />
+                <div className="cropper-buttons">
+                  <button className="btn-text" onClick={() => setShowCropper(false)}>Cancel</button>
+                  <button className="btn-primary" onClick={handleCropConfirm}>Confirm Crop</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <img src="/logo2.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' }}/>
         
         {/* LANDING VIEW */}
