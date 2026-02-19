@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Download, Loader2, Linkedin, Instagram, Twitter, Check } from 'lucide-react';
+
 import { supabase } from '../../supabaseClient'; 
 import imageCompression from 'browser-image-compression';
 import { Turnstile } from '@marsidev/react-turnstile';
@@ -20,6 +21,14 @@ const MOBILE_TICKET_CONFIG = {
   row: { x: 93.4, y: 46.2, w: 6, h: 16.1, rotation: -90.0, fontSize: 0.8 },
   qr: { x: 88.6, y: 74.3, size: 25.3, rotation: 0.0 }
 };
+
+// Map the hex codes to the exactly named images in the public folder
+const TICKET_COLORS = [
+  { id: 'pink', hex: '#E0596B', label: 'P' },
+  { id: 'dorange', hex: '#F27405', label: 'O' },
+  { id: 'lorange', hex: '#F4B112', label: 'Y' },
+  { id: 'mellow', hex: '#FFDE9E', label: 'o' }
+];
 
 const SHARE_CAPTION = `Just got my ticket for the GWY Pre-Conference and I’m lowkey excited-excited 🥹✨
 I thought it would be just another online thing…
@@ -84,6 +93,9 @@ const TicketSection = () => {
   const [error, setError] = useState('');
   const [ticketData, setTicketData] = useState(null);
   const [copyFeedback, setCopyFeedback] = useState('');
+  
+  // Track selected ticket color, default to pink
+  const [selectedColor, setSelectedColor] = useState('pink'); 
   
   const [captchaToken, setCaptchaToken] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -231,14 +243,12 @@ const TicketSection = () => {
     setLoading(true);
     setError('');
 
-    // --- STRICT CAPTCHA CHECK ---
     if (!captchaToken) {
       setError("Please complete the security check.");
       setLoading(false);
       return;
     }
 
-    // upload mandatory
     if (!formData.image) {
       setError("Please upload a photo to generate your ticket.");
       setLoading(false);
@@ -286,12 +296,13 @@ const TicketSection = () => {
           .from('ticket-avatars')
           .getPublicUrl(fileName);
           
-        avatarUrl = publicUrlData.publicUrl;
+        avatarUrl = formData.imagePreview || publicUrlData.publicUrl;
       }
 
       const row = Math.floor(Math.random() * 50) + 1;
       const seat = Math.floor(Math.random() * 100) + 1;
 
+      // DO NOT include ticket_color here to avoid Edge Function errors
       const newTicketPayload = {
         name: formData.name,
         email: formData.email,
@@ -336,8 +347,7 @@ const TicketSection = () => {
 
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.src = "/ticket-bg.png"; 
-
+    
     img.onload = () => {
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
@@ -391,7 +401,7 @@ const TicketSection = () => {
       }
 
       function drawDetails() {
-        const pinkColor = '#ffb6c1'; 
+        const stubBgColor = '#F1ECEB'; 
         const yellowColor = '#fef0c5';
 
         const drawBox = (config, value) => {
@@ -403,7 +413,7 @@ const TicketSection = () => {
           ctx.save();
           ctx.translate(cx, cy);
           ctx.rotate(config.rotation * Math.PI / 180);
-          ctx.fillStyle = pinkColor;
+          ctx.fillStyle = stubBgColor;
           ctx.fillRect(-bw/2, -bh/2, bw, bh);
           ctx.fillStyle = "#000";
           ctx.textAlign = "center";
@@ -445,6 +455,16 @@ const TicketSection = () => {
         link.click();
       }
     };
+
+    img.onerror = () => {
+      // Fallback: If .jpg is failing (404), try loading .png instead
+      if (img.src.includes('.jpg')) {
+        img.src = `/${selectedColor}.png`;
+      }
+    };
+    
+    // Start by attempting to load the .jpg version
+    img.src = `/${selectedColor}.jpg`; 
   };
 
   return (
@@ -487,7 +507,7 @@ const TicketSection = () => {
           </div>
         )}
 
-        <img src="/logo2.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' }}/>
+        {/* <img src="/logo2.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' , marginTop: view === 'ticket' ? '-120px' : '0'}}/> */}
         
         {/* LANDING VIEW */}
         {view === 'landing' && (
@@ -604,7 +624,6 @@ const TicketSection = () => {
                 </div>
               </div>
               
-              {/* CAPTCHA ALWAYS LOADS NOW */}
               <div className="form-group" style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
                 <Turnstile 
                   siteKey={TURNSTILE_SITE_KEY} 
@@ -635,6 +654,7 @@ const TicketSection = () => {
             </p>
             
             <div className="ticket-visual" style={{
+              aspectRatio: '3 / 1', // Prevents layout collapsing if image loads slowly/fails
               '--avatar-x': `${activeConfig.avatar.x}%`,
               '--avatar-y': `${activeConfig.avatar.y}%`,
               '--avatar-size': `${activeConfig.avatar.size}%`,
@@ -655,18 +675,29 @@ const TicketSection = () => {
               '--qr-y': `${activeConfig.qr.y}%`,
               '--qr-rot': `${activeConfig.qr.rotation}deg`,
             }}>
-              <img src="/mellow.png" alt="Ticket" className="ticket-bg-img" />
+              {/* Fallback pattern attached in case the .jpg file returns 404 */}
+              <img 
+                src={`/${selectedColor}.jpg`} 
+                alt="Ticket" 
+                className="ticket-bg-img"
+                style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', margin: 0, padding: 0 }}
+                onError={(e) => {
+                  if (e.target.src.includes('.jpg')) {
+                    e.target.src = `/${selectedColor}.png`;
+                  }
+                }}
+              />
               <div className="ticket-avatar-container">
                 <img src={ticketData.avatar_url || "./default-avatar.png"} alt="User" />
               </div>
               
-              <div className="info-block seat-block">
+              <div className="info-block seat-block" style={{ backgroundColor: '#F1ECEB' }}>
                 <span className="stub-value" style={{ fontSize: `${activeConfig.seat.fontSize}rem` }}>
                   {ticketData.seat_number}
                 </span>
               </div>
               
-              <div className="info-block row-block">
+              <div className="info-block row-block" style={{ backgroundColor: '#F1ECEB' }}>
                 <span className="stub-value" style={{ fontSize: `${activeConfig.row.fontSize}rem` }}>
                   {ticketData.row_number}
                 </span>
@@ -675,6 +706,30 @@ const TicketSection = () => {
               <div className="qr-block">
                 <div className="patch-yellow"></div>
                 <img src="/qr.png" alt="Ticket QR Code" style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} />
+              </div>
+            </div>
+
+            {/* COLOR SELECTION SECTION */}
+            <div className="theme-selection-wrapper" style={{ margin: '25px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <p style={{ fontWeight: 'bold', marginBottom: '15px', color: '#333' }}>Customize Your Ticket Theme</p>
+              <div style={{ display: 'flex', gap: '15px' }}>
+                {TICKET_COLORS.map((color) => (
+                  <div
+                    key={color.id}
+                    onClick={() => setSelectedColor(color.id)}
+                    style={{
+                      width: '45px',
+                      height: '45px',
+                      borderRadius: '50%',
+                      backgroundColor: color.hex,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      border: selectedColor === color.id ? '4px solid #333' : '2px solid transparent',
+                      boxShadow: selectedColor === color.id ? '0 4px 8px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.1)'
+                    }}
+                    title={`Select ${color.id} theme`}
+                  />
+                ))}
               </div>
             </div>
 
@@ -703,6 +758,7 @@ const TicketSection = () => {
               )}
             </div>
             <br></br>
+            
             <span style={{ fontWeight: 'bold', fontSize: '1.2rem' , color:'black'}}>Use the hashtag : <span className='highlight-text' style={{ fontWeight: 'bold', fontSize: '1.2rem'}}>#GWYConf #DoraDora</span> <br></br> <span style={{ fontWeight: 'bold', fontSize: '1.2rem' , color:'black'}}>Don't forget to Tag us: <span className='highlight-text' style={{ fontWeight: 'bold', fontSize: '1.2rem'}}>doradao</span></span></span>
 
             <div className="ticket-footer-text">
