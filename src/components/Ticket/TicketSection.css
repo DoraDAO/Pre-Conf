@@ -390,7 +390,7 @@ select.input-field {
 .info-block {
   position: absolute;
   transform: translate(-50%, -50%) rotate(var(--rotation, 0deg));
-  background-color: #ffb6c1;
+  background-color: #F1ECEB;
   z-index: 20;
   display: flex;
   flex-direction: column;
@@ -496,7 +496,7 @@ select.input-field {
 }
 
 .ticket-footer-text {
-  margin-top: 4rem;
+  margin-top: 2rem;
   text-align: center;
   padding-bottom: 2rem;
 }

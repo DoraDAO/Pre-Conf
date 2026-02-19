@@ -655,7 +655,7 @@ const TicketSection = () => {
               '--qr-y': `${activeConfig.qr.y}%`,
               '--qr-rot': `${activeConfig.qr.rotation}deg`,
             }}>
-              <img src="/ticket-bg.png" alt="Ticket" className="ticket-bg-img" />
+              <img src="/mellow.png" alt="Ticket" className="ticket-bg-img" />
               <div className="ticket-avatar-container">
                 <img src={ticketData.avatar_url || "./default-avatar.png"} alt="User" />
               </div>
@@ -683,7 +683,8 @@ const TicketSection = () => {
             </button>
 
             <div className="social-share-section">
-              <p>Share your attendance by tagging us !!</p>
+              <p>Just tap your favourite social platform below, your <span className="highlight-text">ready-to-post caption</span> is already waiting, so go on…</p> 
+              <p>share it, share it</p>
               <div className="social-icons">
                 <button onClick={() => handleShare('linkedin')} className="social-icon" aria-label="Share on LinkedIn">
                   <Linkedin size={28} strokeWidth={1.5} />
@@ -701,6 +702,8 @@ const TicketSection = () => {
                 </motion.div>
               )}
             </div>
+            <br></br>
+            <span style={{ fontWeight: 'bold', fontSize: '1.2rem' , color:'black'}}>Use the hashtag : <span className='highlight-text' style={{ fontWeight: 'bold', fontSize: '1.2rem'}}>#GWYConf #DoraDora</span> <br></br> <span style={{ fontWeight: 'bold', fontSize: '1.2rem' , color:'black'}}>Don't forget to Tag us: <span className='highlight-text' style={{ fontWeight: 'bold', fontSize: '1.2rem'}}>doradao</span></span></span>
 
             <div className="ticket-footer-text">
               <h2>See you inside the global room.</h2>
