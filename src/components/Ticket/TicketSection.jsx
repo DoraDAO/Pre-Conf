@@ -507,7 +507,7 @@ const TicketSection = () => {
           </div>
         )}
 
-        {/* <img src="/logo2.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' , marginTop: view === 'ticket' ? '-120px' : '0'}}/> */}
+        <img src="/logo2.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' , marginTop: view === 'ticket' ? '-220px' : '0'}}/>
         
         {/* LANDING VIEW */}
         {view === 'landing' && (
