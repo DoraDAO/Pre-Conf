@@ -120,6 +120,17 @@ const TicketSection = () => {
 
   const canvasRef = useRef(null);
 
+  // Preload images for instant color switching
+  useEffect(() => {
+    TICKET_COLORS.forEach((color) => {
+      const img = new Image();
+      img.src = `/${color.id}.jpg`;
+      // Preloading the png fallback as well just in case
+      const fallbackImg = new Image();
+      fallbackImg.src = `/${color.id}.png`;
+    });
+  }, []);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
     handleResize();
