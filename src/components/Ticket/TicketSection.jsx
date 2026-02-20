@@ -307,7 +307,7 @@ const TicketSection = () => {
           .from('ticket-avatars')
           .getPublicUrl(fileName);
           
-        avatarUrl = formData.imagePreview || publicUrlData.publicUrl;
+        avatarUrl = publicUrlData.publicUrl;
       }
 
       const row = Math.floor(Math.random() * 50) + 1;
