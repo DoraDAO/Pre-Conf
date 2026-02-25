@@ -39,7 +39,7 @@ DoraDelight ( i must tell you these treats are just wow..literally wow )
 Okay GWY, I see you 👀💌
 It’s free (which still feels unreal),
 See you all there 🫶
-And if you haven’t gotten yours yet… use the link ( https://gwyconf.xyz/ )
+And if you haven’t gotten yours yet… use the link ( https://gwyconf26.xyz/ )
 & drop my name in the referral section so I can also be eligible for the sweet treats 🥹✨
 #GWYConf #DoraDora`;
 
@@ -439,7 +439,7 @@ const TicketSection = () => {
 
         const qrImg = new Image();
         qrImg.crossOrigin = "anonymous";
-        qrImg.src = "/qr.png";
+        qrImg.src = "/qr1.png";
         qrImg.onload = () => {
           const { x: qrX_pct, y: qrY_pct, size: qrSize_pct, rotation } = TICKET_CONFIG.qr;
           const qrSize = h * (qrSize_pct / 100);
@@ -716,7 +716,7 @@ const TicketSection = () => {
               
               <div className="qr-block">
                 <div className="patch-yellow"></div>
-                <img src="/qr.png" alt="Ticket QR Code" style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} />
+                <img src="/qr1.png" alt="Ticket QR Code" style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} />
               </div>
             </div>
 
