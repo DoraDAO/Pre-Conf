@@ -47,6 +47,7 @@ function Navbar() {
           <button onClick={() => handleNavClick('experience')} className={styles.navLink}>Experience</button>
           <button onClick={() => handleNavClick('speakers')} className={styles.navLink}>Speakers</button>
           <button onClick={() => handleNavClick('events')} className={styles.navLink}>Events</button>
+          <Link to="/board" className={styles.navLink}>Board</Link>
           
           {/* Ambassador with dropdown */}
           <div 

@@ -15,6 +15,7 @@ import Partners from './components/Partners/Partners';
 import Footer from './components/Footer/Footer';
 import TicketSection from './components/Ticket/TicketSection';
 import LeaderboardPage from './pages/LeaderboardPage';
+import BulletinBoard from './components/BulletinBoard/BulletinBoard';
 
 function HomePage() {
   return (
@@ -44,6 +45,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/ticket" element={<TicketSection />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
+            <Route path="/board" element={<BulletinBoard />} />
           </Routes>
         </main>
         <Footer />
