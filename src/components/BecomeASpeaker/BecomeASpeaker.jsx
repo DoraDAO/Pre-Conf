@@ -14,7 +14,7 @@ function BecomeASpeaker() {
         >
           <h2 className={styles.title}>
             BECOME AN<br />
-            EVENT <span className={styles.highlight}>SPEAKERS</span>
+            EVENT <span className={styles.highlight}>SPEAKER</span>
           </h2>
           
           <p className={styles.description}>

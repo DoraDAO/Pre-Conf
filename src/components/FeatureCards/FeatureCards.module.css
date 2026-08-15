@@ -3,7 +3,7 @@
 .features {
     position: relative;
     padding: 120px 24px;
-    background: #0b0f19;
+    background: #D9671B;
     overflow: hidden;
 }
 
@@ -13,7 +13,7 @@
     position: absolute;
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(255, 70, 100, 0.5), transparent 70%);
+    background: radial-gradient(circle, #FDE9B9, transparent 70%);
     top: 50%;
     right: -150px;
     transform: translateY(-50%);
@@ -60,7 +60,7 @@
 
 .titleSub {
     font-weight: 700;
-    color: #6ef3d6;
+    color: #FDE9B9;
 }
 
 /* ================= GRID ================= */

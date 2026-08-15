@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Download, Loader2, Linkedin, Instagram, Twitter, Check } from 'lucide-react';
+
 import { supabase } from '../../supabaseClient'; 
 import imageCompression from 'browser-image-compression';
-import { Turnstile } from '@marsidev/react-turnstile'; 
+import { Turnstile } from '@marsidev/react-turnstile';
+import Cropper from 'react-easy-crop'; 
 import './TicketSection.css'; 
 
-// --- CONFIGURATION ---
 const TICKET_CONFIG = {
   avatar: { x: 64.6, y: 50.6, size: 101.1 },
   seat: { x: 93.1, y: 23.1, w: 5.9, h: 17.8, rotation: -90.0, fontSize: 2.2 },
@@ -21,18 +22,70 @@ const MOBILE_TICKET_CONFIG = {
   qr: { x: 88.6, y: 74.3, size: 25.3, rotation: 0.0 }
 };
 
-const SHARE_CAPTION = `I just said yes to
-And honestly… I’m smiling smiling.
+// Map the hex codes to the exactly named images in the public folder
+const TICKET_COLORS = [
+  { id: 'pink', hex: '#E0596B', label: 'P' },
+  { id: 'dorange', hex: '#F27405', label: 'O' },
+  { id: 'lorange', hex: '#F4B112', label: 'Y' },
+  { id: 'mellow', hex: '#FFDE9E', label: 'o' }
+];
 
-30+ Countries. One shared heartbeat.
-So many beautiful minds building, dreaming, creating.
-I’m coming to learn, to build, to connect..
-but also to feel that spark you only get when the right people gather in one place.
-See you inside
-#GWYConf #GirlsWhoYap #PreConfGlobalExperience`;
+const SHARE_CAPTION = `Just got my ticket for the GWY Pre-Conference and I’m lowkey excited-excited 🥹✨
+I thought it would be just another online thing…
+but looking at what’s planned, speaker sessions, Talent Night, creator challenges, gaming rooms, live collabs with people across borders (!!)...it actually feels like something I want to show up for.
+Also… merch raffles?
+Gift vouchers?
+DoraDelight ( i must tell you these treats are just wow..literally wow )
+Okay GWY, I see you 👀💌
+It’s free (which still feels unreal),
+See you all there 🫶
+And if you haven’t gotten yours yet… use the link ( https://gwyconf26.xyz/ )
+& drop my name in the referral section so I can also be eligible for the sweet treats 🥹✨
+#GWYConf #DoraDora`;
 
-// UPDATED: Now using Environment Variable
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+
+// --- CROP UTILITY FUNCTIONS ---
+const createImage = (url) =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener('load', () => resolve(image));
+    image.addEventListener('error', (error) => reject(error));
+    image.setAttribute('crossOrigin', 'anonymous');
+    image.src = url;
+  });
+
+const getCroppedImg = async (imageSrc, pixelCrop) => {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((file) => {
+      if (file) {
+        file.name = 'cropped.jpg';
+        resolve(file);
+      } else {
+        reject(new Error('Canvas is empty'));
+      }
+    }, 'image/jpeg');
+  });
+};
 
 const TicketSection = () => {
   const [view, setView] = useState('landing'); 
@@ -41,10 +94,18 @@ const TicketSection = () => {
   const [ticketData, setTicketData] = useState(null);
   const [copyFeedback, setCopyFeedback] = useState('');
   
-  // CAPTCHA State
+  // Track selected ticket color, default to pink
+  const [selectedColor, setSelectedColor] = useState('pink'); 
+  
   const [captchaToken, setCaptchaToken] = useState(null);
-
   const [isMobile, setIsMobile] = useState(false);
+
+  // --- CROPPER STATES ---
+  const [showCropper, setShowCropper] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [rawImageStr, setRawImageStr] = useState(null); 
 
   const [formData, setFormData] = useState({
     name: '',
@@ -58,6 +119,17 @@ const TicketSection = () => {
   });
 
   const canvasRef = useRef(null);
+
+  // Preload images for instant color switching
+  useEffect(() => {
+    TICKET_COLORS.forEach((color) => {
+      const img = new Image();
+      img.src = `/${color.id}.jpg`;
+      // Preloading the png fallback as well just in case
+      const fallbackImg = new Image();
+      fallbackImg.src = `/${color.id}.png`;
+    });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 600);
@@ -79,53 +151,78 @@ const TicketSection = () => {
         setError("Image size should be less than 5MB");
         return;
       }
+      setRawImageStr(URL.createObjectURL(file));
+      setShowCropper(true);
+      setError('');
+    }
+    e.target.value = null;
+  };
+
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  const handleCropConfirm = async () => {
+    try {
+      const croppedBlob = await getCroppedImg(rawImageStr, croppedAreaPixels);
+      const croppedFile = new File([croppedBlob], "avatar.jpg", { type: "image/jpeg" });
+      
       setFormData({
         ...formData,
-        image: file,
-        imagePreview: URL.createObjectURL(file)
+        image: croppedFile,
+        imagePreview: URL.createObjectURL(croppedBlob)
       });
-      setError('');
+      
+      setShowCropper(false);
+    } catch (e) {
+      console.error(e);
+      setError("Failed to crop image.");
     }
   };
 
   const handleShare = (platform) => {
-    const encodedText = encodeURIComponent(SHARE_CAPTION);
-    let url = '';
-
-    const copyToClipboard = (text) => {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
+    const copyToClipboard = async (text, successMessage) => {
       try {
-        document.execCommand('copy');
-        setCopyFeedback('Caption copied! Opening Instagram...');
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+        }
+        setCopyFeedback(successMessage);
         setTimeout(() => setCopyFeedback(''), 3000);
       } catch (err) {
         console.error('Unable to copy', err);
         setCopyFeedback('Failed to copy caption.');
       }
-      document.body.removeChild(textArea);
     };
+
+    let url = '';
+    let msg = '';
 
     switch (platform) {
       case 'linkedin':
-        url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedText}`;
-        window.open(url, '_blank');
+        url = 'https://www.linkedin.com/feed/?shareActive=true';
+        msg = 'Caption copied! Paste it in your post...';
         break;
       case 'twitter':
-        url = `https://twitter.com/intent/tweet?text=${encodedText}`;
-        window.open(url, '_blank');
+        url = 'https://twitter.com/compose/tweet';
+        msg = 'Caption copied! Paste and edit for Twitter...';
         break;
       case 'instagram':
-        copyToClipboard(SHARE_CAPTION);
-        setTimeout(() => {
-          window.open('https://www.instagram.com/', '_blank');
-        }, 500);
+        url = 'https://www.instagram.com/';
+        msg = 'Caption copied! Opening Instagram...';
         break;
       default:
-        break;
+        return;
     }
+    
+    window.open(url, '_blank');
+    copyToClipboard(SHARE_CAPTION, msg);
   };
 
   const checkExistingTicket = async (email) => {
@@ -157,15 +254,19 @@ const TicketSection = () => {
     setLoading(true);
     setError('');
 
-    // CHECK CAPTCHA BEFORE PROCEEDING
     if (!captchaToken) {
       setError("Please complete the security check.");
       setLoading(false);
       return;
     }
 
+    if (!formData.image) {
+      setError("Please upload a photo to generate your ticket.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      // 1. Check if user already exists (Standard client-side check)
       const { data: existing } = await supabase
         .from('tickets')
         .select('id')
@@ -178,16 +279,15 @@ const TicketSection = () => {
         return;
       }
 
-      // 2. Upload Image (Standard client-side upload)
       let avatarUrl = '';
       if (formData.image) {
         let fileToUpload = formData.image;
         try {
           const options = {
-            maxSizeMB: 0.1,          
-            maxWidthOrHeight: 400,  
+            maxSizeMB: 0.2,          
+            maxWidthOrHeight: 1200,  
             useWebWorker: true,
-            fileType: 'image/webp'   
+            fileType: 'image/jpeg'   
           };
           fileToUpload = await imageCompression(formData.image, options);
         } catch (compressionError) {
@@ -213,6 +313,7 @@ const TicketSection = () => {
       const row = Math.floor(Math.random() * 50) + 1;
       const seat = Math.floor(Math.random() * 100) + 1;
 
+      // DO NOT include ticket_color here to avoid Edge Function errors
       const newTicketPayload = {
         name: formData.name,
         email: formData.email,
@@ -225,7 +326,6 @@ const TicketSection = () => {
         seat_number: seat.toString().padStart(2, '0')
       };
 
-      // 3. SECURE INSERT via Edge Function
       const { data, error: functionError } = await supabase.functions.invoke('swift-action', {
         body: { 
           ticketData: newTicketPayload,
@@ -236,7 +336,6 @@ const TicketSection = () => {
       if (functionError) throw new Error(functionError.message || "Failed to create ticket");
       if (data?.error) throw new Error(data.error);
 
-      // Success
       setTicketData(data.data);
       setView('ticket');
 
@@ -253,10 +352,13 @@ const TicketSection = () => {
     if (!canvas || !ticketData) return;
 
     const ctx = canvas.getContext('2d');
+    
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.src = "/ticket-bg.png"; 
-
+    
     img.onload = () => {
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
@@ -290,14 +392,27 @@ const TicketSection = () => {
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
         ctx.clip();
-        ctx.drawImage(avatarImg, centerX - radius - 1, centerY - radius - 1, radius * 2 + 2, radius * 2 + 2);
+        
+        const imgW = avatarImg.width;
+        const imgH = avatarImg.height;
+        const minSize = Math.min(imgW, imgH); 
+        
+        const startX = (imgW - minSize) / 2;
+        const startY = (imgH - minSize) / 2;
+
+        ctx.drawImage(
+          avatarImg, 
+          startX, startY, minSize, minSize, 
+          centerX - radius, centerY - radius, radius * 2, radius * 2 
+        );
+        
         ctx.restore();
         
         drawDetails();
       }
 
       function drawDetails() {
-        const pinkColor = '#ffb6c1'; 
+        const stubBgColor = '#F1ECEB'; 
         const yellowColor = '#fef0c5';
 
         const drawBox = (config, value) => {
@@ -309,7 +424,7 @@ const TicketSection = () => {
           ctx.save();
           ctx.translate(cx, cy);
           ctx.rotate(config.rotation * Math.PI / 180);
-          ctx.fillStyle = pinkColor;
+          ctx.fillStyle = stubBgColor;
           ctx.fillRect(-bw/2, -bh/2, bw, bh);
           ctx.fillStyle = "#000";
           ctx.textAlign = "center";
@@ -324,8 +439,7 @@ const TicketSection = () => {
 
         const qrImg = new Image();
         qrImg.crossOrigin = "anonymous";
-        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=GWY-${ticketData.email}`;
-        
+        qrImg.src = "/qr1.png";
         qrImg.onload = () => {
           const { x: qrX_pct, y: qrY_pct, size: qrSize_pct, rotation } = TICKET_CONFIG.qr;
           const qrSize = h * (qrSize_pct / 100);
@@ -352,19 +466,65 @@ const TicketSection = () => {
         link.click();
       }
     };
+
+    img.onerror = () => {
+      // Fallback: If .jpg is failing (404), try loading .png instead
+      if (img.src.includes('.jpg')) {
+        img.src = `/${selectedColor}.png`;
+      }
+    };
+    
+    // Start by attempting to load the .jpg version
+    img.src = `/${selectedColor}.jpg`; 
   };
 
   return (
     <section className="ticket-section">
       <div className="ticket-container">
         
-        <img src="/logo.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' }}/>
+        {/* --- CROPPER MODAL --- */}
+        {showCropper && (
+          <div className="cropper-modal-overlay">
+            <div className="cropper-modal">
+              <div className="cropper-container">
+                <Cropper
+                  image={rawImageStr}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  cropShape="round"
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                />
+              </div>
+              <div className="cropper-controls">
+                <input
+                  type="range"
+                  value={zoom}
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  aria-labelledby="Zoom"
+                  onChange={(e) => setZoom(e.target.value)}
+                  className="zoom-slider"
+                />
+                <div className="cropper-buttons">
+                  <button className="btn-text" onClick={() => setShowCropper(false)}>Cancel</button>
+                  <button className="btn-primary" onClick={handleCropConfirm}>Confirm Crop</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <img src="/logo2.png" alt="Girls Who Yap" className="site-logo" style={{ borderRadius: '50%' , marginTop: view === 'ticket' ? '-220px' : '0'}}/>
         
         {/* LANDING VIEW */}
         {view === 'landing' && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="ticket-card">
             <h1>Get Your Ticket</h1>
-            <p>Join the Girls Who Yap Pre-Conference!</p>
+            <p>Join the Girls Who Yap <span className="highlight-text">Pre-Conference</span>!</p>
             <div className="button-group">
               <button className="btn-primary" onClick={() => setView('form')}>
                 Get Ticket
@@ -403,7 +563,7 @@ const TicketSection = () => {
         {/* FORM VIEW */}
         {view === 'form' && (
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="ticket-card wide-form">
-            <h2>Secure Your Free Pass</h2> 
+            <h2><span style={{ fontWeight: 900 }}>Secure Your </span> <span className="highlight-text">Free Pass</span></h2> 
             <h6> (No registration fee. Limited curated seats.) </h6>
             <form onSubmit={handleSubmit}>
               
@@ -455,7 +615,7 @@ const TicketSection = () => {
 
               <div className="photo-section">
                 <div className="form-group">
-                  <label>Photo</label>
+                  <label>Photo <span style={{ color: '#e74c3c' }}>*</span></label>
                   <div className="file-upload">
                     <input type="file" id="file" accept="image/*" onChange={handleImageChange} />
                     <label htmlFor="file" className="file-label">
@@ -463,8 +623,11 @@ const TicketSection = () => {
                         <img src={formData.imagePreview} className="preview-img" alt="Preview" />
                       ) : (
                         <>
-                          <Upload size={24} />
-                          <span>Upload Photo</span>
+                          <Upload size={22} />
+                          <span>Upload Photo</span><br></br>
+                          <span style={{ fontSize: '0.75rem', color: '#888', marginTop: '4px' }}>
+                            (JPG/JPEG/PNG/WEBP only)
+                          </span>
                         </>
                       )}
                     </label>
@@ -472,7 +635,6 @@ const TicketSection = () => {
                 </div>
               </div>
               
-              {/* CAPTCHA SECTION */}
               <div className="form-group" style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
                 <Turnstile 
                   siteKey={TURNSTILE_SITE_KEY} 
@@ -502,8 +664,8 @@ const TicketSection = () => {
               Welcome to the <span className="highlight-text">"GWY Pre-Conference Global Experience"</span>
             </p>
             
-            {/* DYNAMIC TICKET VISUAL */}
             <div className="ticket-visual" style={{
+              aspectRatio: '3 / 1', // Prevents layout collapsing if image loads slowly/fails
               '--avatar-x': `${activeConfig.avatar.x}%`,
               '--avatar-y': `${activeConfig.avatar.y}%`,
               '--avatar-size': `${activeConfig.avatar.size}%`,
@@ -524,20 +686,29 @@ const TicketSection = () => {
               '--qr-y': `${activeConfig.qr.y}%`,
               '--qr-rot': `${activeConfig.qr.rotation}deg`,
             }}>
-              <img src="/ticket-bg.png" alt="Ticket" className="ticket-bg-img" />
+              {/* Fallback pattern attached in case the .jpg file returns 404 */}
+              <img 
+                src={`/${selectedColor}.jpg`} 
+                alt="Ticket" 
+                className="ticket-bg-img"
+                style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', margin: 0, padding: 0 }}
+                onError={(e) => {
+                  if (e.target.src.includes('.jpg')) {
+                    e.target.src = `/${selectedColor}.png`;
+                  }
+                }}
+              />
               <div className="ticket-avatar-container">
                 <img src={ticketData.avatar_url || "./default-avatar.png"} alt="User" />
               </div>
               
-              {/* SEAT */}
-              <div className="info-block seat-block">
+              <div className="info-block seat-block" style={{ backgroundColor: '#F1ECEB' }}>
                 <span className="stub-value" style={{ fontSize: `${activeConfig.seat.fontSize}rem` }}>
                   {ticketData.seat_number}
                 </span>
               </div>
               
-              {/* ROW */}
-              <div className="info-block row-block">
+              <div className="info-block row-block" style={{ backgroundColor: '#F1ECEB' }}>
                 <span className="stub-value" style={{ fontSize: `${activeConfig.row.fontSize}rem` }}>
                   {ticketData.row_number}
                 </span>
@@ -545,7 +716,31 @@ const TicketSection = () => {
               
               <div className="qr-block">
                 <div className="patch-yellow"></div>
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GWY-${ticketData.email}`} alt="QR" />
+                <img src="/qr1.png" alt="Ticket QR Code" style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} />
+              </div>
+            </div>
+
+            {/* COLOR SELECTION SECTION */}
+            <div className="theme-selection-wrapper" style={{ margin: '25px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <p style={{ fontWeight: 'bold', marginBottom: '15px', color: '#333' }}>Customize Your Ticket Theme</p>
+              <div style={{ display: 'flex', gap: '15px' }}>
+                {TICKET_COLORS.map((color) => (
+                  <div
+                    key={color.id}
+                    onClick={() => setSelectedColor(color.id)}
+                    style={{
+                      width: '45px',
+                      height: '45px',
+                      borderRadius: '50%',
+                      backgroundColor: color.hex,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      border: selectedColor === color.id ? '4px solid #333' : '2px solid transparent',
+                      boxShadow: selectedColor === color.id ? '0 4px 8px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.1)'
+                    }}
+                    title={`Select ${color.id} theme`}
+                  />
+                ))}
               </div>
             </div>
 
@@ -554,7 +749,8 @@ const TicketSection = () => {
             </button>
 
             <div className="social-share-section">
-              <p>Share your attendance by tagging us !!</p>
+              <p>Just tap your favourite social platform below, your <span className="highlight-text">ready-to-post caption</span> is already waiting, so go on…</p> 
+              <p>share it, share it</p>
               <div className="social-icons">
                 <button onClick={() => handleShare('linkedin')} className="social-icon" aria-label="Share on LinkedIn">
                   <Linkedin size={28} strokeWidth={1.5} />
@@ -572,10 +768,13 @@ const TicketSection = () => {
                 </motion.div>
               )}
             </div>
+            <br></br>
+            
+            <span style={{ fontWeight: 'bold', fontSize: '1.2rem' , color:'black'}}>Use the hashtag : <span className='highlight-text' style={{ fontWeight: 'bold', fontSize: '1.2rem'}}>#GWYConf #DoraDora</span> <br></br> <span style={{ fontWeight: 'bold', fontSize: '1.2rem' , color:'black'}}>Don't forget to Tag us: <span className='highlight-text' style={{ fontWeight: 'bold', fontSize: '1.2rem'}}>doradao</span></span></span>
 
             <div className="ticket-footer-text">
               <h2>See you inside the global room.</h2>
-              <h2>The energy builds with you ;)</h2>
+              <h2>The energy builds with <span className="highlight-text">you</span> !!</h2>
             </div>
 
             <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>

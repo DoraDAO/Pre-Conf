@@ -29,7 +29,7 @@
 
 .titleSub {
     font-weight: 700;
-    color: var(--color-accent-mint);
+    color: #D9671B;
 }
 
 .headerActions {
@@ -102,7 +102,7 @@
 
 .eventDate {
     font-size: var(--text-sm);
-    color: var(--color-accent-coral);
+    color: #D9671B;
     font-weight: 700;
     margin-bottom: var(--space-6);
     font-family: var(--font-heading);
@@ -170,8 +170,8 @@
 }
 
 .hostBtn {
-    background: var(--color-text-primary);
-    color: #fff;
+    background: #FDE9B9;
+    color:  var(--color-text-primary);
     padding: var(--space-4) var(--space-8);
     border-radius: var(--radius-full);
     font-weight: 600;

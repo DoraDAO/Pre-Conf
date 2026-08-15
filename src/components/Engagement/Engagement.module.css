@@ -28,6 +28,11 @@
     color: var(--color-accent-coral);
 }
 
+.highlightText {
+  color: #D9671B;
+  font-weight: bold;
+}
+
 .description {
     font-size: var(--text-lg);
     color: var(--color-text-secondary);

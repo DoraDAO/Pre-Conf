@@ -25,7 +25,7 @@
 }
 
 .highlight {
-    color: var(--color-accent-mint);
+    color: #D9671B;
 }
 
 .description {
@@ -43,8 +43,8 @@
 .applyBtn {
     display: inline-block;
     margin-top: var(--space-6);
-    background: #dfaa37;
-    color: var(--color-text-primary);
+    background: var(--color-text-primary);
+    color: #fff;
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-full);
     font-weight: 700;

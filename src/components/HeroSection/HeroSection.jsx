@@ -56,8 +56,8 @@ function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           ><br></br>
-            <img src="/logo2.svg" alt="Girls Who Yap" className={styles.mainLogo} />
-            <span className={styles.preConferenceTitle}>pre conference</span>
+            {/* <img src="/logo2.svg" alt="Girls Who Yap" className={styles.mainLogo} /> */}
+            {/* <span className={styles.preConferenceTitle}>pre conference</span> */}
           </motion.div>
           
           {/* <motion.div 
@@ -102,8 +102,8 @@ function HeroSection() {
                 {/* Updated: Replaced blue div with Image Logo */}
                 <img src="/logo.png" alt="GWY Logo" className={styles.avatar} />
                 <div>
-                  <div className={styles.speakerName}>GirlsWhoYap Conference</div>
-                  <div className={styles.speakerRole}>Dev-creator Gathering</div>
+                  <div className={styles.speakerName}>GWY Conference</div>
+                  <div className={styles.speakerRole}>Dev-Creator Gathering</div>
                 </div>
               </div>
               <button 
@@ -179,7 +179,7 @@ const AnimatedCTASection = () => {
       transition={{ duration: 0.6, delay: 0.8 }}
     >
       <p className={styles.description}>
-        GWY Pre-Conference is a global virtual gathering designed to kick off the community experience.
+        <span className={styles.eventDate} style={{ fontSize: '24px' }}>GWY Pre-Conference</span> is a global virtual gathering designed to kick off the community experience.
         It's open to everyone, builders, creators, students, professionals, and curious minds, everywhere.
       </p>
 

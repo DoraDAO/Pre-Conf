@@ -118,7 +118,7 @@
 
 .eventDate {
     font-size: var(--text-sm);
-    color: var(--color-accent-coral);
+    color: #D9671B;
     font-weight: 700;
     margin-bottom: var(--space-6);
     font-family: var(--font-heading);
@@ -293,7 +293,7 @@
 }
 
 .countdownItem {
-    background: #73677B;
+    background: #D9671B;
     padding: var(--space-6) var(--space-4);
     border-radius: var(--radius-xl);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25),
@@ -324,7 +324,7 @@
 }
 
 .getTicketsBtn {
-    background: linear-gradient(135deg, #f5f0e8 0%, #ede4d3 100%);
+    background: #FDE9B9;
     color: #333;
     padding: var(--space-5) var(--space-12);
     border-radius: var(--radius-full);

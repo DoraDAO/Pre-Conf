@@ -22,13 +22,64 @@
 
 /* --- LOGO STYLES --- */
 .site-logo {
-  height: 80px; 
+  height: 250px; 
   width: auto;
-  margin-bottom: 2rem;
-  /* FIX: Added margin-top to ensure it doesn't touch the header */
+  margin-bottom: -40px;
   margin-top: 1rem; 
   object-fit: contain;
   display: block;
+}
+
+/* crop modal */
+.cropper-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.cropper-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cropper-container {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  background: #333;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cropper-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.zoom-slider {
+  width: 100%;
+  cursor: pointer;
+}
+
+.cropper-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .ticket-card {
@@ -96,7 +147,7 @@
 
 .highlight-text {
   font-weight: 700;
-  color: #000;
+  color: #D9671B;
 }
 
 /* --- FORM LAYOUTS (SPLIT) --- */
@@ -180,6 +231,7 @@ select.input-field {
 .file-upload {
   position: relative;
   height: 140px;
+  width: 100%;
   border: 2px dashed #ccc;
   border-radius: 16px;
   display: flex;
@@ -215,9 +267,11 @@ select.input-field {
 }
 
 .preview-img {
+  position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
 }
 
 /* --- BUTTONS --- */
@@ -326,15 +380,17 @@ select.input-field {
 }
 
 .ticket-avatar-container img {
+  position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
 }
 
 .info-block {
   position: absolute;
   transform: translate(-50%, -50%) rotate(var(--rotation, 0deg));
-  background-color: #ffb6c1;
+  background-color: #F1ECEB;
   z-index: 20;
   display: flex;
   flex-direction: column;
@@ -440,7 +496,7 @@ select.input-field {
 }
 
 .ticket-footer-text {
-  margin-top: 4rem;
+  margin-top: 2rem;
   text-align: center;
   padding-bottom: 2rem;
 }

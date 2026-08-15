@@ -36,7 +36,7 @@ function FeatureCards() {
         <div className={styles.header}>
           <h2 className={styles.title}>
             <span className={styles.titleMain}>WHAT IT FEELS LIKE</span>
-            <span className={styles.titleSub}>TO BE AT GIRLSWHOYAP</span>
+            <span className={styles.titleSub}>TO BE AT GWY PRE-CONF</span>
           </h2>
         </div>
         

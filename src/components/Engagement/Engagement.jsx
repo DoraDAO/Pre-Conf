@@ -16,12 +16,12 @@ function Engagement() {
         >
           <h2 className={styles.title}>GWY
             <br />
-            Pre-Conf
+            <span className={styles.highlightText}>Pre-Conf</span>
           </h2>
 
           <p className={styles.description}>
-            Attend the Global Pre-Conference to connect with creators and builders worldwide. There is NO charge to
-            attend, and seats are curated to ensure meaningful participation.
+            Attend the Global Pre-Conference to connect with creators and builders worldwide. <span className={styles.highlightText}>There is NO charge to attend (free of cost) </span>
+            , and seats are curated to ensure meaningful participation.
           </p>
 
           <button className={styles.ctaBtn} onClick={() => navigate('/ticket')}>
